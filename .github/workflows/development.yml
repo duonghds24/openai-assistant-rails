@@ -53,6 +53,8 @@ jobs:
       run: |
         gem install bundler
         bundle install
+        rails db:create
+        rails db:seed
 
     - name: Run RSpec
       run: bundle exec rspec
