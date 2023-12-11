@@ -6,7 +6,7 @@ on:
       - development
 
 jobs:
-  rubocop:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,33 +16,13 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.7
+        ruby-version: 2.7.8
 
     - name: Install dependencies
       run: |
         gem install bundler
         bundle install
-
-    - name: Run RuboCop
+    - name: Run Rubocop
       run: bundle exec rubocop
-      continue-on-error: false
-
-  rspec:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 2.7
-
-    - name: Install dependencies
-      run: |
-        gem install bundler
-        bundle install
-
     - name: Run RSpec
       run: bundle exec rspec
