@@ -28,3 +28,7 @@ curl --location 'localhost:3000/assistants' \
 }'
 ```
 or download my postman collection `https://api.postman.com/collections/31324053-dba76c0a-60fe-4cd6-b95c-aea8da7d6618?access_key=PMAT-01HHC1J88R7R85Z01FRJMT6DQF`
+
+## Run test
+- run `rubocop --auto-correct` to run test
+- see the result and look into `coverage/index.html` to check coverage
