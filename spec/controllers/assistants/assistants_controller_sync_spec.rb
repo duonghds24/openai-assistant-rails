@@ -11,7 +11,7 @@ RSpec.describe AssistantsController, type: :controller do
     end
 
     context "when there are unsynced assistants" do
-      # DatabaseCleaner.clean_with(:truncation)
+      DatabaseCleaner.clean_with(:truncation)
       FactoryBot.reload
       let!(:assistant1) { create(:assistant, assistant_id: nil) }
       let!(:assistant2) { create(:assistant, assistant_id: nil) }

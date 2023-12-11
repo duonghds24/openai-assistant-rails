@@ -54,8 +54,7 @@ jobs:
         gem install bundler
         bundle install
         rails db:create
-        rails db:migrate
-        rails db:seed
+        RAILS_ENV=test rails db:migrate
 
     - name: Run RSpec
       run: bundle exec rspec
