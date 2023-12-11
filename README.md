@@ -4,6 +4,7 @@
 - copy env sample `cp .env.sample .env` then correct the require field
 - go into `database.yml` and correct your database config
 - run `rails db:create` to init database
+- run `rails db:migrate` to setup tables
 - then run `rails db:seed` to generate some seed data (`orgnisation` and `member`)
 - finally, run `rails s` to start the server
 
