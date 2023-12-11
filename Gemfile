@@ -45,6 +45,10 @@ group :development do
   # gem "spring"
 end
 
+group :test do
+  gem 'simplecov', require: false
+end
+
 gem "pg", "~> 1.5"
 
 gem "openai-assistant", "~> 1.1"

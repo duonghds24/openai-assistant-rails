@@ -76,15 +76,6 @@ class AssistantsController < ApplicationController
     }, status: :ok
   end
 
-  def clear
-    openai_assistant = OpenaiAssistant::Assistant::Client.new("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")
-    assistants = openai_assistant.list_assistant
-    assistants.each do |assistant|
-      openai_assistant.delete_assistant(assistant["id"])
-    end
-    render json: { message: "cleared" }, status: :ok
-  end
-
   private
 
   def set_assistant
