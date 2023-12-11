@@ -1,13 +1,13 @@
 ENV["RAILS_ENV"] = "test"
 
-require 'simplecov'
+require "simplecov"
 require "factory_bot_rails"
 require "database_cleaner"
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 require "openai_assistant"
 
-SimpleCov.start 'rails' do
+SimpleCov.start "rails" do
   # Additional configuration if needed
 end
 
