@@ -32,16 +32,6 @@ jobs:
   rspec:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:13
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_DB: myapp_test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -58,7 +48,12 @@ jobs:
 
     - name: Set up database
       run: |
-        cp config/database.yml.ci config/database.yml
+        echo "test:" > config/database.yml
+        echo "  adapter: sqlite3" >> config/database.yml
+        echo "  database: db/test.sqlite3" >> config/database.yml
+
+    - name: Install SQLite3
+      run: sudo apt-get install sqlite3 libsqlite3-dev
 
     - name: Run RSpec
       run: bundle exec rspec
