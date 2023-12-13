@@ -60,3 +60,5 @@ gem "factory_bot_rails", "~> 6.4"
 gem "database_cleaner", "~> 2.0"
 
 gem "dotenv-rails", "~> 2.8"
+
+gem "grape", "~> 2.0"

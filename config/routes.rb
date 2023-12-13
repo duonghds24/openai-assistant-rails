@@ -13,7 +13,6 @@ Rails.application.routes.draw do
   resources :assistants do
     collection do
       post "sync"
-      get "clear"
     end
   end
 end

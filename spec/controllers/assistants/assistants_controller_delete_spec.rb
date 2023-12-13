@@ -4,42 +4,26 @@ RSpec.describe AssistantsController, type: :controller do
   let(:member) { create(:member) }
 
   describe "DELETE #destroy" do
-    context "when valid assistant ID is provided" do
-      it "destroys an assistant and calls delete_assistant" do
-        assistant = create(:assistant, member: member, assistant_id: "some_id")
-
-        allow_any_instance_of(OpenaiAssistant::Assistant::Client).to receive(:delete_assistant).and_return(true)
-
-        expect do
-          delete :destroy, params: { id: assistant.id }
-        end.to change(Assistant, :count).by(-1)
-
-        expect(response).to have_http_status(:ok)
-      end
+    it "delete an assistant" do
+      assistant = create(:assistant, member: member)
+      delete :destroy, params: { id: assistant.id }
+      expect(response).to have_http_status(:ok)
+      assistant.reload
+      expect(assistant.deleted).to eq(true)
     end
 
-    context "when invalid assistant ID is provided" do
-      it "raises ActiveRecord::RecordNotFound" do
-        create(:assistant, member: member)
-
-        expect do
-          delete :destroy, params: { id: "invalid_id" }
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
+    it "updates invalid id" do
+      create(:assistant, member: member)
+      expect do
+        delete :destroy, params: { id: "invalid_id" }
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    context "when assistant has no assistant_id" do
-      it "destroys an assistant without calling delete_assistant" do
-        assistant = create(:assistant, member: member, assistant_id: nil)
-
-        expect_any_instance_of(OpenaiAssistant::Assistant::Client).not_to receive(:delete_assistant)
-
-        expect do
-          delete :destroy, params: { id: assistant.id }
-        end.to change(Assistant, :count).by(-1)
-
-        expect(response).to have_http_status(:ok)
-      end
+    it "update db failed" do
+      assistant = create(:assistant, member: member)
+      allow_any_instance_of(Assistant).to receive(:update).and_return(false)
+      delete :destroy, params: { id: assistant.id }
+      expect(response).to have_http_status(:internal_server_error)
     end
   end
 end

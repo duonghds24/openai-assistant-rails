@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_231_207_062_447) do
+ActiveRecord::Schema[7.1].define(version: 20_231_213_050_210) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,7 @@ ActiveRecord::Schema[7.1].define(version: 20_231_207_062_447) do
     t.integer "sync_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "deleted", default: false
     t.index ["member_id"], name: "index_assistants_on_member_id"
   end
 
@@ -38,9 +39,7 @@ ActiveRecord::Schema[7.1].define(version: 20_231_207_062_447) do
     t.index ["organisation_id"], name: "index_members_on_organisation_id"
   end
 
-  create_table "organisations", id: :uuid, default: lambda {
-                                                      "gen_random_uuid()"
-                                                    }, force: :cascade do |t|
+  create_table "organisations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "org_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
