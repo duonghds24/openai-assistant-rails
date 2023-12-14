@@ -10,9 +10,13 @@ Rails.application.routes.draw do
 end
 
 Rails.application.routes.draw do
-  resources :assistants do
-    collection do
-      post "sync"
-    end
-  end
+  mount Assistants::API => "/"
 end
+
+# Rails.application.routes.draw do
+#   resources :assistants do
+#     collection do
+#       post "sync"
+#     end
+#   end
+# end

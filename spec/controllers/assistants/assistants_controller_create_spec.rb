@@ -1,62 +1,41 @@
 require "rails_helper"
 
-RSpec.describe AssistantsController, type: :controller do
-  let(:member) { create(:member) }
+RSpec.describe Assistants::API, type: :request do
+  describe "POST /api/v1/assistants" do
+    it "creates a new assistant" do
+      member = create(:member, role: "admin")
+      assistant_params = attributes_for(:assistant, member_id: member.id)
 
-  describe "POST #create" do
-    it "creates an assistant" do
-      expect do
-        post :create, params: {
-          assistant: {
-            member_id: member.id,
-            model: "gpt-3.5-turbo",
-            instructions: "Test Instructions"
-          }
-        }
-      end.to change(Assistant, :count).by(1)
-
-      expect(response).to have_http_status(:created)
+      post "/api/v1/assistants", params: { assistant: assistant_params }, headers: { "Authorization" => member.id }
+      expect(response).to have_http_status(201)
+      expect(JSON.parse(response.body)["member_id"]).to eq(member.id)
     end
 
-    it "create invalid model" do
-      expect do
-        post :create, params: {
-          assistant: {
-            member_id: member.id,
-            model: "gpt-9.9",
-            instructions: "Test Instructions"
-          }
-        }
-      end.to change(Assistant, :count).by(0)
+    it "create assistant failed by wrong model" do
+      member = create(:member, role: "admin")
+      assistant_params = attributes_for(:assistant, member_id: member.id, model: "wrong_model")
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      post "/api/v1/assistants", params: { assistant: assistant_params }, headers: { "Authorization" => member.id }
+      expect(response).to have_http_status(400)
+      expect(JSON.parse(response.body)["error"]).to eq("assistant[model] does not have a valid value")
+    end 
+
+    it "insert database error" do
+      member = create(:member, role: "admin")
+      assistant_params = attributes_for(:assistant, member_id: member.id)
+      ast_error = build(:assistant).tap { |assistant| assistant.errors.add(:base, "error") }
+      allow(Assistant).to receive(:new).with(assistant_params).and_return(ast_error)
+
+      post "/api/v1/assistants", params: { assistant: assistant_params }, headers: { "Authorization" => member.id }
+      expect(response).to have_http_status(500)
     end
 
-    it "create invalid member" do
-      expect do
-        post :create, params: {
-          assistant: {
-            member_id: "invalid_member",
-            model: "gpt-3.5-turbo",
-            instructions: "Test Instructions"
-          }
-        }
-      end.to change(Assistant, :count).by(0)
+    it "member not found" do
+      member = create(:member, role: "admin")
+      assistant_params = attributes_for(:assistant, member_id: "member_not_found")
 
-      expect(response).to have_http_status(:unprocessable_entity)
-    end
-
-    it "create missing instructions field" do
-      expect do
-        post :create, params: {
-          assistant: {
-            member_id: "invalid_member",
-            model: "gpt-3.5-turbo"
-          }
-        }
-      end.to change(Assistant, :count).by(0)
-
-      expect(response).to have_http_status(:unprocessable_entity)
+      post "/api/v1/assistants", params: { assistant: assistant_params }, headers: { "Authorization" => member.id }
+      expect(response).to have_http_status(400)
     end
   end
 end

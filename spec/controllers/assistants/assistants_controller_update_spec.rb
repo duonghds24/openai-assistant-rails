@@ -1,29 +1,32 @@
 require "rails_helper"
 
-RSpec.describe AssistantsController, type: :controller do
-  let(:member) { create(:member) }
-
-  describe "PUT #update" do
+RSpec.describe Assistants::API, type: :request do
+  describe "PUT /api/v1/assistants/:id" do
     it "updates an assistant" do
+      member = create(:member, role: "admin")
       assistant = create(:assistant, member: member)
-      put :update, params: { id: assistant.id, assistant: { instructions: "You are chicken" } }
-      expect(response).to have_http_status(:ok)
-      assistant.reload
-      expect(assistant.instructions).to eq("You are chicken")
+
+      assistant_params = attributes_for(:assistant, instructions: "new instructions")
+      put "/api/v1/assistants/#{assistant.id}", params: { assistant: assistant_params }, headers: { "Authorization" => member.id }
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["instructions"]).to eq("new instructions")
     end
 
-    it "updates invalid id" do
-      create(:assistant, member: member)
-      expect do
-        put :update, params: { id: "invalid_id", assistant: { instructions: "You are chicken" } }
-      end.to raise_error(ActiveRecord::RecordNotFound)
+    it "returns an error" do
+      member = create(:member, role: "admin")
+
+      assistant_params = attributes_for(:assistant, name: "new name")
+      put "/api/v1/assistants/invalid_id", params: { assistant: assistant_params }, headers: { "Authorization" => member.id }
+      expect(response).to have_http_status(404)
     end
 
-    it "update db failed" do
+    it "update failed" do
+      member = create(:member, role: "admin")
       assistant = create(:assistant, member: member)
       allow_any_instance_of(Assistant).to receive(:update).and_return(false)
-      put :update, params: { id: assistant.id, assistant: { instructions: "You are chicken" } }
-      expect(response).to have_http_status(:unprocessable_entity)
+      assistant_params = attributes_for(:assistant, name: "new name")
+      put "/api/v1/assistants/#{assistant.id}", params: { assistant: assistant_params }, headers: { "Authorization" => member.id }
+      expect(response).to have_http_status(500)
     end
   end
 end

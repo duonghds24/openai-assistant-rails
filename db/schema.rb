@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_231_213_050_210) do
+ActiveRecord::Schema[7.1].define(version: 20_231_214_063_600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -36,6 +36,7 @@ ActiveRecord::Schema[7.1].define(version: 20_231_213_050_210) do
     t.string "member_name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "role", default: "member"
     t.index ["organisation_id"], name: "index_members_on_organisation_id"
   end
 

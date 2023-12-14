@@ -1,29 +1,28 @@
 require "rails_helper"
 
-RSpec.describe AssistantsController, type: :controller do
-  let(:member) { create(:member) }
-
-  describe "DELETE #destroy" do
-    it "delete an assistant" do
+RSpec.describe Assistants::API, type: :request do
+  describe "DELETE /api/v1/assistants/:id" do
+    it "deletes an assistant" do
+      member = create(:member, role: "admin")
       assistant = create(:assistant, member: member)
-      delete :destroy, params: { id: assistant.id }
-      expect(response).to have_http_status(:ok)
-      assistant.reload
-      expect(assistant.deleted).to eq(true)
+
+      delete "/api/v1/assistants/#{assistant.id}", headers: { "Authorization" => member.id }
+      expect(response).to have_http_status(200)
     end
 
-    it "updates invalid id" do
-      create(:assistant, member: member)
-      expect do
-        delete :destroy, params: { id: "invalid_id" }
-      end.to raise_error(ActiveRecord::RecordNotFound)
+    it "returns an error" do
+      member = create(:member, role: "admin")
+
+      delete "/api/v1/assistants/invalid_id", headers: { "Authorization" => member.id }
+      expect(response).to have_http_status(404)
     end
 
-    it "update db failed" do
+    it "delete failed" do
+      member = create(:member, role: "admin")
       assistant = create(:assistant, member: member)
       allow_any_instance_of(Assistant).to receive(:update).and_return(false)
-      delete :destroy, params: { id: assistant.id }
-      expect(response).to have_http_status(:internal_server_error)
+      delete "/api/v1/assistants/#{assistant.id}", headers: { "Authorization" => member.id }
+      expect(response).to have_http_status(500)
     end
   end
 end

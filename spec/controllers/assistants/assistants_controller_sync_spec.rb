@@ -1,9 +1,8 @@
 require "rails_helper"
+RSpec.describe Assistants::API, type: :request do
+  let(:member) { create(:member, role: "admin") }
 
-RSpec.describe AssistantsController, type: :controller do
-  let(:member) { create(:member) }
-
-  describe "POST #sync" do
+  describe "POST /api/v1/assistants/sync" do
     let(:openai_assistant) { instance_double(OpenaiAssistant::Assistant::Client) }
 
     before do
@@ -33,7 +32,7 @@ RSpec.describe AssistantsController, type: :controller do
                                                                          OpenaiAssistant::ErrorResponse.new(code: 400, message: "Invalid model"))
       end
       it "sync assistants successfully" do
-        post :sync
+        post "/api/v1/assistants/sync", headers: { "Authorization" => member.id }
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to eq({
                                                   "success_sync_assistant" => [{
@@ -56,7 +55,7 @@ RSpec.describe AssistantsController, type: :controller do
 
     context "when there are no unsynced assistants" do
       it "returns an empty response" do
-        post :sync
+        post "/api/v1/assistants/sync", headers: { "Authorization" => member.id }
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to eq({
                                                   "success_sync_assistant" => [],
@@ -74,7 +73,7 @@ RSpec.describe AssistantsController, type: :controller do
         )
       end
       it "returns an empty response" do
-        post :sync
+        post "/api/v1/assistants/sync", headers: { "Authorization" => member.id }
         expect(response).to have_http_status(:internal_server_error)
       end
     end
@@ -92,7 +91,7 @@ RSpec.describe AssistantsController, type: :controller do
         )
       end
       it "returns an empty response" do
-        post :sync
+        post "/api/v1/assistants/sync", headers: { "Authorization" => member.id }
         expect(response).to have_http_status(:internal_server_error)
       end
     end

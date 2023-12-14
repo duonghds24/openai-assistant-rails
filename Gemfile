@@ -62,3 +62,5 @@ gem "database_cleaner", "~> 2.0"
 gem "dotenv-rails", "~> 2.8"
 
 gem "grape", "~> 2.0"
+
+gem "pundit", "~> 2.3"
