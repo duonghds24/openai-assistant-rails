@@ -64,3 +64,7 @@ gem "dotenv-rails", "~> 2.8"
 gem "grape", "~> 2.0"
 
 gem "pundit", "~> 2.3"
+
+gem "sidekiq", "~> 7.2"
+
+gem "sidekiq-cron", "~> 1.12"

@@ -1,0 +1,4 @@
+sync_cron_job:
+  cron: '*/30 * * * * *'
+  class: 'SyncAssistantsWorker'
+  queue: 'default'
