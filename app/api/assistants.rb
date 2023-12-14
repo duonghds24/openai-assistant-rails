@@ -16,6 +16,7 @@ module Assistants
 
       def validate_member_id(member_id)
         return if Member.exists?(id: member_id)
+
         error!({ error: "invalid member_id", detail: "member not found" }, 400)
       end
 

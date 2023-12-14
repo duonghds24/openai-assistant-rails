@@ -18,7 +18,7 @@ RSpec.describe Assistants::API, type: :request do
       post "/api/v1/assistants", params: { assistant: assistant_params }, headers: { "Authorization" => member.id }
       expect(response).to have_http_status(400)
       expect(JSON.parse(response.body)["error"]).to eq("assistant[model] does not have a valid value")
-    end 
+    end
 
     it "insert database error" do
       member = create(:member, role: "admin")
